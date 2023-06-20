@@ -103,3 +103,35 @@ Created symlink from /etc/systemd/system/multi-user.target.wants/jenkins.service
 
 ```
 
+# Configuration of jenkins 
+
+### login to web ui http://IP:8080
+
+### password you can get using two ways
+
+### 1st method
+
+```
+[ec2-user@ip-172-31-49-102 ~]$ sudo systemctl status  jenkins
+● jenkins.service - Jenkins Continuous Integration Server
+   Loaded: loaded (/usr/lib/systemd/system/jenkins.service; enabled; vendor preset: disabled)
+   Active: active (running) since Tue 2023-06-20 12:05:58 UTC; 11min ago
+ Main PID: 5106 (java)
+   CGroup: /system.slice/jenkins.service
+           └─5106 /usr/bin/java -Djava.awt.headless=true -jar /usr/share/java/jenkins.war --webroot=%C/jenkins/war --httpPort=8080
+
+Jun 20 12:05:38 ip-172-31-49-102.ec2.internal jenkins[5106]: 5e37612a2bba466c871ff4c399f40cd1
+Jun 20 12:05:38 ip-172-31-49-102.ec2.internal jenkins[5106]: This may also be found at: /var/lib/jenkins/secrets/initialAdminPassword
+Jun 20 12:05:38 ip-172-31-49-102.ec2.internal jenkins[5106]: *************************************************************
+Jun 20 12:05:38 ip-172-31-49-102.ec2.internal jenkins[5106]: ***********
+```
+
+### method 2
+
+```
+[ec2-user@ip-172-31-49-102 ~]$ sudo cat  /var/lib/jenkins/secrets/initialAdminPassword
+5e37612a2bba466c871ff4c399
+```
+
+
+
