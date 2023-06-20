@@ -133,5 +133,133 @@ Jun 20 12:05:38 ip-172-31-49-102.ec2.internal jenkins[5106]: ***********
 5e37612a2bba466c871ff4c399
 ```
 
+## Understanding user management in jenkins 
 
+### users understanding 
+
+<img src="user.png">
+
+### backend user
+
+```
+[ec2-user@ip-172-31-49-102 ~]$ grep jenkins  /etc/passwd
+jenkins:x:995:993:Jenkins Automation Server:/var/lib/jenkins:/bin/false
+[ec2-user@ip-172-31-49-102 ~]$ 
+
+```
+
+## Introduction to jobs
+
+<img src="job.png">
+
+## Integration of docker with jenkins 
+
+<img src="int.png">
+
+### Docker integration cases
+
+<img src="docker.png">
+
+
+### Installing docker in the same machine where we have jenkins running
+
+```
+[ec2-user@ip-172-31-49-102 ~]$ rpm -qa docker*
+[ec2-user@ip-172-31-49-102 ~]$ 
+[ec2-user@ip-172-31-49-102 ~]$ sudo yum install docker -y
+Failed to set locale, defaulting to C
+Loaded plugins: extras_suggestions, langpacks, priorities, update-motd
+amzn2-core                                                                                                            | 3.7 kB  00:00:00     
+Resolving Dependencies
+--> Running transaction check
+---> Package docker.x86_64 0:20.10.23-1.amzn2.0.1 will be installed
+--> Processing Dependency: runc >= 1.0.0 for package: docker-20.10.23-1.amzn2.0.1.x86_64
+--> Processing Dependency: libcgroup >= 0.40.rc1-5.15 for package: docker-20.10.23-1.amzn2.0.1.x86_64
+--> Processing Dependency: containerd >= 1.3.2 for package: docker-20.10.23-1.amzn2.0.1.x86_64
+--> Processing Dependency: pigz for package: docker-20.10.23-1.amzn2.0.1.x86_64
+--> Running transaction check
+
+```
+
+### startng docker service
+
+```
+[ec2-user@ip-172-31-49-102 ~]$ sudo systemctl start docker
+[ec2-user@ip-172-31-49-102 ~]$ sudo systemctl enable  docker
+Created symlink from /etc/systemd/system/multi-user.target.wants/docker.service to /usr/lib/systemd/system/docker.service.
+[ec2-user@ip-172-31-49-102 ~]$ sudo systemctl status  docker
+● docker.service - Docker Application Container Engine
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+   Active: active (running) since Tue 2023-06-20 13:11:40 UTC; 14s ago
+     Docs: https://docs.docker.com
+
+```
+
+### Understanding docker server & client architecture 
+
+<img src="arch.png">
+
+### more detailed understanding 
+
+<img src="arch1.png">
+
+### only root user can run docker client to connect docker server 
+
+```
+[ec2-user@ip-172-31-49-102 ~]$ whoami
+ec2-user
+[ec2-user@ip-172-31-49-102 ~]$ docker  version 
+Client:
+ Version:           20.10.23
+ API version:       1.41
+ Go version:        go1.18.9
+ Git commit:        7155243
+ Built:             Tue Apr 11 22:56:36 2023
+ OS/Arch:           linux/amd64
+ Context:           default
+ Experimental:      true
+Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.24/version": dial unix /var/run/docker.sock: connect: permission denied
+[ec2-user@ip-172-31-49-102 ~]$ 
+[ec2-user@ip-172-31-49-102 ~]$ sudo -i
+[root@ip-172-31-49-102 ~]# whoami
+root
+[root@ip-172-31-49-102 ~]# docker  version 
+Client:
+ Version:           20.10.23
+ API version:       1.41
+ Go version:        go1.18.9
+ Git commit:        7155243
+ Built:             Tue Apr 11 22:56:36 2023
+ OS/Arch:           linux/amd64
+ Context:           default
+ Experimental:      true
+
+Server:
+ Engine:
+  Version:          20.10.23
+  API version:      1.41 (minimum version 1.12)
+  Go version:       go1.18.9
+  Git commit:       6051f14
+  Built:            Tue Apr 11 22:57:17 2023
+  OS/Arch:          linux/amd64
+  Experimental:     false
+ containerd:
+  Version:          1.6.19
+  GitCommit:        1e1ea6e986c6c86565bc33d52e34b81b3e2bc71f
+ runc:
+  Version:          1.1.7
+  GitCommit:        f19387a6bec4944c770f7668ab51c4348d9c2f38
+ docker-init:
+  Version:          0.19.0
+  GitCommit:        de40ad0
+
+```
+
+### jenkins docker connection 
+
+<img src="arch3.png">
+
+### solution to non root users
+
+<img src="finsh.png">
 
