@@ -102,4 +102,17 @@ Docker Compose version v2.18.1
 
 ```
 
+### jenkins job1 build step commadns
+
+```
+# delete if any container is there
+docker-compose down 
+# using docker-compose 
+docker-compose up -d --build
+# checking container
+docker-compose ps
+# checking images
+docker images
+```
+
 
