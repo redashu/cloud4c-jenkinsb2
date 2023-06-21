@@ -75,3 +75,31 @@ Server:
 
 <img src="jj.png">
 
+### to Bridge the gap between Developers and devops -- we can use automated job build method using Trigger
+
+<img src="tri.png">
+
+## Pipeline jobs 
+
+<img src="pipeline.png">
+
+### Installing docker compsoe client on jenkins machine
+
+```
+ec2-user@ip-172-31-49-102 ~]$ sudo curl -SL https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64 -o   /usr/bin/docker-compose 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100 52.0M  100 52.0M    0     0  99.1M      0 --:--:-- --:--:-- --:--:--  140M
+[ec2-user@ip-172-31-49-102 ~]$ 
+[ec2-user@ip-172-31-49-102 ~]$ 
+[ec2-user@ip-172-31-49-102 ~]$ sudo chmod +x /usr/bin/docker-compose 
+[ec2-user@ip-172-31-49-102 ~]$ 
+[ec2-user@ip-172-31-49-102 ~]$ docker-compose version 
+Docker Compose version v2.18.1
+[ec2-user@ip-172-31-49-102 ~]$ 
+
+
+```
+
+
