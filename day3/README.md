@@ -70,3 +70,8 @@ Server:
   Built:            Tue Apr 11 22:57:17 2023
 
 ```
+
+## github and jenkins integration 
+
+<img src="jj.png">
+
