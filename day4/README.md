@@ -89,4 +89,37 @@ Dockerfile  README.md  cicd.png  docker-compose.yaml  health.html  index.html
 
 <img src="pipeline.png">
 
+### configuration of downloadstream or upstream projects 
 
+<img src="conf.png">
+
+### Introduction to plugins in jenkins 
+
+<img src="pl.png">
+
+## Introduce jenkins for scripted job building and pipeline creation 
+
+<img src="jenkinsfile.png">
+
+### running jenkins as container
+
+```
+root@ip-172-31-49-102 jenkins]# docker pull jenkins/jenkins:lts-jdk11
+lts-jdk11: Pulling from jenkins/jenkins
+bd73737482dd: Extracting [===============================================>   ]  52.36MB/55.05MB
+747b9186aa97: Download complete 
+
+
+=====>
+root@ip-172-31-49-102 jenkins]# docker  volume  create  jenkins-data
+jenkins-data
+[root@ip-172-31-49-102 jenkins]# docker run -itd --name jenkinsc1 -p 8080:8080  --restart always -v jenkins-data:/var/jenkins_home/ jenkins/jenkins:lts-jdk11   
+9db19ede0ed8f668e75b9b2a8fefb3d8961fde29780d53a910830e1d505b09f2
+[root@ip-172-31-49-102 jenkins]# docker ps
+CONTAINER ID   IMAGE                       COMMAND                  CREATED          STATUS          PORTS                                                  NAMES
+9db19ede0ed8   jenkins/jenkins:lts-jdk11   "/usr/bin/tini -- /u…"   3 seconds ago    Up 2 seconds    0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 50000/tcp   jenkinsc1
+92d3aa5ad376   ashu-web:app9               "/docker-entrypoint.…"   22 minutes ago   Up 22 minutes   0.0.0.0:1234->80/tcp, :::1234->80/tcp                  ashuc1
+[root@ip-172-31-49-102 jenkins]# docker  logs jenkinsc1
+
+
+```
