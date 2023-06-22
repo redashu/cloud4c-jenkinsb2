@@ -85,3 +85,8 @@ Dockerfile  README.md  cicd.png  docker-compose.yaml  health.html  index.html
 
 ```
 
+## pipeline jobs in jenkins
+
+<img src="pipeline.png">
+
+
