@@ -212,3 +212,47 @@ pipeline {
 
 ```
 
+### Example 3
+
+```
+pipeline {
+    agent any
+    triggers {
+        cron('H/2 * * * *')
+    }
+
+    stages {
+        stage('docker compose running ') {
+            steps {
+                echo 'Hello World, hey we are running docker-compsoe here!!'
+            }
+        }
+        
+        stage('testing webapp') {
+            steps {
+                echo 'we are testing container running status using curl !'
+            }
+            
+        }
+        
+        stage('pushing image to docker hub') {
+            steps {
+                echo "using jenkins plugin to build and push image"
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Hey we did it !'
+        }
+        failure {
+            echo 'keep your hopes high and try again !'
+        }
+        always {
+            echo 'keep up the good work !'
+        }
+    }
+}
+
+```
+
