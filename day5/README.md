@@ -139,3 +139,44 @@ and check to make sure that only the key(s) you wanted were added.
 
 ```
 
+# getting started with jenkinsfile concept and groovy scripting 
+
+<img src="jf.png">
+
+### sample file of jenkinsfile option 
+
+<img src="jf1.png">
+
+## Jenkinsfile examples
+
+### example 1
+
+```
+pipeline {
+    agent any
+
+    stages {
+        stage('docker compose running ') {
+            steps {
+                echo 'Hello World, hey we are running docker-compsoe here!!'
+            }
+        }
+        
+        stage('testing webapp') {
+            steps {
+                echo 'we are testing container running status using curl !'
+            }
+            
+        }
+        
+        stage('pushing image to docker hub') {
+            steps {
+                echo "using jenkins plugin to build and push image"
+            }
+        }
+    }
+}
+
+```
+
+
