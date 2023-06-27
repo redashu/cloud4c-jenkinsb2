@@ -65,3 +65,42 @@ WORKDIR java-springboot
 # now running maven to create .war file 
 RUN mvn clean package
 ```
+
+### jenkinsfile with maven + dockerfile
+
+```
+pipeline {
+    // planing to run this job on any random node
+    agent any 
+
+    stages {
+        stage('for cloning java project from github') {
+            steps {
+                echo 'we are cloning git repo'
+                // using git internal keyword in pipeline
+                git 'https://github.com/redashu/java-springboot.git'
+                // verify it 
+                sh 'ls'
+            }
+        }
+        stage('using maven to build this in war file by docker '){
+            steps {
+                echo 'please wait we are trying to build maven package using docker'
+                // using shell command of docker
+                sh 'docker build -t ashu-java:app$BUILD_NUMBER .'
+                // verify docker image
+                sh 'docker images | grep ashu-java'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'hey we did it'
+        }
+        failure {
+            echo 'we can try again we still have way to go'
+        }
+    }
+}
+
+```
