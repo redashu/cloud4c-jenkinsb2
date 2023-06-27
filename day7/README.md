@@ -104,3 +104,50 @@ pipeline {
 }
 
 ```
+
+### jenkinsfile with docker internal jenkins support with pipeline jobs
+
+```
+pipeline {
+    // planing to run this job on any random node
+    agent any 
+
+    stages {
+        stage('for cloning java project from github') {
+            steps {
+                echo 'we are cloning git repo'
+                // using git internal keyword in pipeline
+                git 'https://github.com/redashu/java-springboot.git'
+                // verify it 
+                sh 'ls'
+            }
+        }
+        stage('using maven to build into war file by docker plugins '){
+            steps {
+                echo 'please wait we are trying to build maven package using docker'
+                // using script feature
+                script {
+                    def my-img = "ashu-javaweb"
+                    def my-img-tag = "version$BUILD_NUMBER"
+                    // calling docker function for image build
+                    docker.build(my-img + ":" + my-img-tag, "-f Dockerfile .")
+                }
+                // verify 
+                sh  'docker images | grep ashu'
+               
+            }
+        }
+    }
+    post {
+        success {
+            echo 'hey we did it'
+        }
+        failure {
+            echo 'we can try again we still have way to go'
+        }
+    }
+}
+
+```
+
+
