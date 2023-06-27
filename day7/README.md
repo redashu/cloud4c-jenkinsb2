@@ -127,10 +127,10 @@ pipeline {
                 echo 'please wait we are trying to build maven package using docker'
                 // using script feature
                 script {
-                    def my-img = "ashu-javaweb"
-                    def my-img-tag = "version$BUILD_NUMBER"
+                    def myimg = "ashu-javaweb"
+                    def myimgtag = "version$BUILD_NUMBER"
                     // calling docker function for image build
-                    docker.build(my-img + ":" + my-img-tag, "-f Dockerfile .")
+                    docker.build(myimg + ":" + myimgtag, "-f Dockerfile .")
                 }
                 // verify 
                 sh  'docker images | grep ashu'
@@ -147,6 +147,7 @@ pipeline {
         }
     }
 }
+
 
 ```
 
