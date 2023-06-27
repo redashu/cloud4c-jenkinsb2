@@ -151,4 +151,64 @@ pipeline {
 
 ```
 
+### Jenkinsfile with docker pluging 
+
+```
+pipeline {
+    // planing to run this job on any random node
+    agent any 
+
+    stages {
+        stage('for cloning java project from github') {
+            steps {
+                echo 'we are cloning git repo'
+                // using git internal keyword in pipeline
+                git 'https://github.com/redashu/java-springboot.git'
+                // verify it 
+                sh 'ls'
+            }
+        }
+        stage('using maven to build into war file by docker plugins '){
+            steps {
+                echo 'please wait we are trying to build maven package using docker'
+                // using script feature
+                script {
+                    def myimg = "dockerashu/ashu-javaweb"
+                    def myimgtag = "version$BUILD_NUMBER"
+                    // calling docker function for image build
+                    docker.build(myimg + ":" + myimgtag, "-f Dockerfile .")
+                }
+                // verify 
+                sh  'docker images | grep ashu'
+               
+            }
+        }
+        stage('pushing image to docker hub'){
+            steps {
+                echo 'we are pushing image to docker hub'
+                script {
+                    def myimg = "dockerashu/ashu-javaweb"
+                    def myimgtag = "version$BUILD_NUMBER"
+                    // docker hub credential from secret section of jenkins
+                    def mycred = "b174d3db-9c22-420f-acbd-d1fbc2fbd40b"
+                    // calling function for login and pushing image to docker hub
+                    docker.withRegistry('https://registry.hub.docker.com',mycred){
+                        docker.image(myimg + ":" + myimgtag).push()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'hey we did it'
+        }
+        failure {
+            echo 'we can try again we still have way to go'
+        }
+    }
+}
+
+```
+
 
