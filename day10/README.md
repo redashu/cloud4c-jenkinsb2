@@ -193,3 +193,100 @@ pipeline {
 }
 
 ```
+
+## adding k8s cd section in security pipelien 
+
+```
+pipeline {
+    agent {
+        label 'master'
+    }
+
+    stages {
+        stage('cloning github source code') {
+            steps {
+                echo 'taking sample code to tesing'
+                git 'https://github.com/redashu/ashu-cisco-webUI.git'
+                // when we run any shell command it return exit code 0 on success 
+                // verification also 
+                sh 'ls | grep html'
+            }
+        }
+        stage('doing SAST using trufflehog'){
+            steps {
+                echo 'using trufflehog to test private key presence'
+                // using docker based truffleHog 
+                sh ' docker run --rm  trufflesecurity/trufflehog:latest  github --repo https://github.com/redashu/ashu-cisco-webUI.git --json     >testkey.txt'
+                // checking presence
+                sh 'cat testkey.txt | grep -i private '
+                sh 'exit 0'
+            }
+        }
+        // building docker image using docker pipeline
+        stage('building image'){
+            steps {
+                echo 'usign docker pipeline to build image'
+                script {
+                    def imageName = "dockerashu/ashusec"
+                    def imageTag  = "version$BUILD_NUMBER"
+                    // docker build function 
+                    docker.build(imageName + ":" + imageTag, " -f Dockerfile .")
+                }
+                // verify image
+                sh 'docker images  | grep ashusec'
+            }
+        }
+        // checking SAST after build 
+        stage('using Trivy to scan docker images for critical security severity'){
+            steps {
+                echo 'Using trivy'
+                sh 'trivy image dockerashu/ashusec:version$BUILD_NUMBER >critic.txt'
+                sh 'cat critic.txt | grep -i critical'
+                
+            }
+        }
+        // creating contaienr and accessing web page
+        stage('using compose for doing this'){
+            steps {
+                echo 'using compose'
+                sh 'docker-compose down'
+                sh 'docker-compose up -d --build'
+                sh 'docker-compose ps'
+                sh 'curl -f http://localhost:1990/health.html'
+            }
+        }
+        // lets push image to docker hub using docker pipeline 
+        stage('pushing image to docker hub usign docker pipeline'){
+            steps {
+                echo 'pushing image'
+                script {
+                    def imageName = "dockerashu/ashusec"
+                    def imageTag  = "version$BUILD_NUMBER"
+                    def hubCred   = "b174d3db-9c22-420f-acbd-d1fbc2fbd40b"
+                    // calling function
+                    docker.withRegistry('https://registry.hub.docker.com',hubCred){
+                        docker.image(imageName + ":" + imageTag).push()
+                    }
+                }
+            }
+        }
+        stage('check connection and deploy deploymet'){
+            steps {
+                echo 'checking connection with k8s control plane'
+                sh 'kubectl cluster-info'
+                // creating namespace 
+                sh 'kubectl apply -f  https://raw.githubusercontent.com/redashu/cloud4c-jenkins-cd/master/ns.yaml'
+                sh 'kubectl get ns | grep ashu-final-app'
+                // deploy the deployment 
+                sh 'kubectl apply -f https://raw.githubusercontent.com/redashu/cloud4c-jenkins-cd/master/deploy.yaml'
+                // verify deployment and pod status
+                sh 'kubectl -n ashu-final-app get deploy | grep ashu-appweb'
+                // wait and check pod status
+                sleep 10
+                sh 'kubectl -n ashu-final-app get pods | grep -i running'
+            }
+        }
+    }
+}
+
+```
